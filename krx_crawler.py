@@ -22,8 +22,10 @@ def item_code2index(df):
 
 def get_item_data(item_name):
     data = cdf.get(item_name, '00000000', '99999999')
+    # datetime to string in order for df.index to convert to json properly
+    data.index = [indx.isoformat().split('T')[0] for indx in data.index]
     data_json = df2json(data)
-    return data_json
+    return {item_name: data_json}
 
 
 def get_ip(file):
@@ -45,9 +47,8 @@ async def crawler():
 if __name__ == '__main__':
     result = asyncio.run(crawler())
     for i, data in enumerate(result):
-        with open(f'krx_data/{i}.json', 'w', encoding='utf-8') as f:
+        item_name = list(data.keys())[0]
+        with open(f'krx_data/{item_name}.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent='\t')
-
-
 
 
