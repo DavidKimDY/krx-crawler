@@ -10,6 +10,10 @@ def get_item_list():
     return cdf.get()["종목명"]
 
 
+def get_item_gen():
+    return (item for item in cdf.get()['종목명'])
+
+
 def df2json(df):
     return eval(df.to_json())
 
@@ -25,6 +29,7 @@ def get_item_data(item_name):
     # datetime to string in order for df.index to convert to json properly
     data.index = [indx.isoformat().split("T")[0] for indx in data.index]
     data_json = df2json(data)
+    print(item_name)
     return {item_name: data_json}
 
 
@@ -33,21 +38,38 @@ def get_ip(file):
         return pickle.load(f)
 
 
-async def crawler():
-    now = time()
+def has_next(gen):
+    try:
+        return next(gen)
+    except StopIteration:
+        return 'No element'
+
+
+async def crawler_test(item_gen):
     loop = asyncio.get_event_loop()
     tasks = []
-    for i in get_item_list():
-        task = loop.run_in_executor(None, get_item_data, i)
+    count = 0
+    stop_sign = False
+    while count < 100: # test 원래는 100개 계획
+        item_name = has_next(item_gen)
+        if item_name == 'No element':
+            stop_sign = True
+            break
+        task = loop.run_in_executor(None, get_item_data, item_name)
         tasks.append(task)
-    result = await asyncio.gather(*tasks)
-    print(time() - now)
-    return result
+        count += 1
+    result_ = await asyncio.gather(*tasks)
+    return result_, stop_sign
 
 
 if __name__ == "__main__":
-    result = asyncio.run(crawler())
-    for i, data in enumerate(result):
-        item_name = list(data.keys())[0]
-        with open(f"krx_data/{item_name}.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent="\t")
+    stop_sign = False
+    item_gen = get_item_gen()
+    while not stop_sign:
+        now = time()
+        result, stop_sign = asyncio.run(crawler_test(item_gen))
+        for data in result:
+            item_name = list(data.keys())[0]
+            with open(f"krx_data/{item_name}.json", "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent="\t")
+        print(time() - now)
