@@ -3,6 +3,7 @@ import json
 import asyncio
 from time import time
 
+import pandas as pd
 import coredotfinance as cdf
 
 
@@ -26,6 +27,8 @@ def item_code2index(df):
 
 def get_item_data(item_name):
     data = cdf.get(item_name, "00000000", "99999999")
+	if '종목명' in data.columns:
+		data.drop('종목명', axis='columns', inplace=True)
     # datetime to string in order for df.index to convert to json properly
     data.index = [indx.isoformat().split("T")[0] for indx in data.index]
     data_json = df2json(data)
