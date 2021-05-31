@@ -1,9 +1,7 @@
-import pickle
 import json
 import asyncio
 from time import time
 
-import pandas as pd
 import coredotfinance as cdf
 
 
@@ -12,7 +10,7 @@ def get_item_list():
 
 
 def get_item_gen():
-    return (item for item in cdf.get()['종목명'])
+    return (item for item in cdf.get()["종목명"])
 
 
 def df2json(df):
@@ -27,8 +25,8 @@ def item_code2index(df):
 
 def get_item_data(item_name):
     data = cdf.get(item_name, "00000000", "99999999")
-    if '종목명' in data.columns:
-        data.drop('종목명', axis='columns', inplace=True)
+    if "종목명" in data.columns:
+        data.drop("종목명", axis="columns", inplace=True)
     # datetime to string in order for df.index to convert to json properly
     data.index = [indx.isoformat().split("T")[0] for indx in data.index]
     data_json = df2json(data)
@@ -36,16 +34,11 @@ def get_item_data(item_name):
     return {item_name: data_json}
 
 
-def get_ip(file):
-    with open(file, "rb") as f:
-        return pickle.load(f)
-
-
 def has_next(gen):
     try:
         return next(gen)
     except StopIteration:
-        return 'No element'
+        return "No element"
 
 
 async def crawler_test(item_gen):
@@ -53,9 +46,9 @@ async def crawler_test(item_gen):
     tasks = []
     count = 0
     stop_sign = False
-    while count < 100: # test 원래는 100개 계획
+    while count < 100:  # test 원래는 100개 계획
         item_name = has_next(item_gen)
-        if item_name == 'No element':
+        if item_name == "No element":
             stop_sign = True
             break
         task = loop.run_in_executor(None, get_item_data, item_name)
