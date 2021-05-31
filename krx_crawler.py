@@ -2,7 +2,7 @@ import json
 import asyncio
 from time import time
 
-import coredotfinance as cdf
+import coredotfinance.krx as cdf
 
 
 def get_item_list():
