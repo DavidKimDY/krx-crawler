@@ -66,5 +66,4 @@ def update(item_name):
 
 if __name__ == "__main__":
     item_name_ = sys.argv[1]
-    if item_name_.endswith('json'):
-        update(item_name_.replace('.json', ''))
+    update(item_name_)
