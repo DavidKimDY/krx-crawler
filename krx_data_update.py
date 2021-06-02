@@ -6,7 +6,7 @@ import sys
 import krx_crawler
 
 # krx_data_test 는 krx_data 로 바뀌어야 한다. (테스트 이후)
-DATA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "krx_data_test")
+DATA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "krx_data")
 
 
 def get_data(item_name):
