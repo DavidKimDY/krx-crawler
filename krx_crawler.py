@@ -1,6 +1,5 @@
 import json
 import asyncio
-from time import time
 
 import coredotfinance.krx as cdf
 
@@ -23,8 +22,8 @@ def item_code2index(df):
     return df
 
 
-def get_item_data(item_name):
-    data = cdf.get(item_name, "00000000", "99999999")
+def get_item_data(item_name, latest_date='00000000', today='99999999'):
+    data = cdf.get(item_name, latest_date, today)
     if "종목명" in data.columns:
         data.drop("종목명", axis="columns", inplace=True)
     # datetime to string in order for df.index to convert to json properly
@@ -62,10 +61,8 @@ if __name__ == "__main__":
     stop_sign = False
     item_gen = get_item_gen()
     while not stop_sign:
-        now = time()
         result, stop_sign = asyncio.run(crawler_test(item_gen))
         for data in result:
             item_name = list(data.keys())[0]
             with open(f"krx_data/{item_name}.json", "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent="\t")
-        print(time() - now)
