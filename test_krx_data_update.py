@@ -15,7 +15,7 @@ item_name = "3S"
 
 
 def test_load_data():
-    data = krx_data_update.load_data("3S")
+    data = krx_data_update.get_data("3S")
     assert list(data.keys())[0] == "3S"
 
 
@@ -28,7 +28,7 @@ def test_is_new_item_True():
 
 
 def test_get_latest_data():
-    assert krx_data_update.get_latest_date(data, item_name) == "2020-01-01"
+    assert krx_data_update.get_latest_date(data, item_name) == "20200101"
 
 
 def test_merge_data():
