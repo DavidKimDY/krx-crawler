@@ -7,3 +7,4 @@ krx_data/*.json
 prof_krx_crawler.py
 test.py
 test_krx_crawler.py
+.env
