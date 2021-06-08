@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 import mongodb_util as mu
+import status_log as sl
 
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_PATH = os.path.join(FILE_PATH, "krx_data")
@@ -48,7 +49,7 @@ def update_document(collection, data):
 
 # 새로 상장된 회사는 insert 한다.
 def insert_mongo(collection, data):
-    collection.insert_one(data)
+    return collection.insert(data)
 
 
 def is_new_data(collection, daily_data):
@@ -80,9 +81,11 @@ def main():
         data = get_data(file_name)
 
         if is_new_data(collection, data):
-            insert_mongo(collection, data)
+            logging_data = insert_mongo(collection, data)
+            sl.logging(data['code'], 'inserted in mongodb', data=logging_data)
         else:
             update_document(collection, data)
+            sl.logging(data['code'], 'updated in mongodb')
         mv_data_to_temp(file_name)
 
 
