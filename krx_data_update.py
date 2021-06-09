@@ -128,6 +128,7 @@ def main():
     code_name = sys.argv[1]
     stock_code, stock_name = code_name.split('^')
     collection = mu.get_mongodb_collection()
+    sl.make_log_file()
     sl.logging(stock_code, 'start')
 
     if is_new_item(collection, stock_code):
