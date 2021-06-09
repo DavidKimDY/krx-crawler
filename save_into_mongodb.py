@@ -86,6 +86,7 @@ def main():
         else:
             update_document(collection, data)
             sl.logging(data['code'], 'updated in mongodb')
+        make_daily_temp_dir()
         mv_data_to_temp(file_name)
 
 
