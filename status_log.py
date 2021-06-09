@@ -45,6 +45,7 @@ def logging(code, msg, data=None):
     log_file_path = os.path.join(LOG_DIR, time + '.json')
     log = {
         'code': code,
+        'type': 'log',
         'time': time,
         'msg': msg,
         'data': data
