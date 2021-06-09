@@ -15,8 +15,20 @@ def get_last_updated_date(status):
 
 
 def update_status(collection, code):
-    today = str(datetime.datetime.now().date())
-    collection.update({'type': 'status', 'code': code}, {'$set': {'last updated': today}})
+    today = datetime.datetime.now().date()
+    if is_before_market_close():
+        date = str(today - datetime.timedelta(days=1))
+    else:
+        date = str(today)
+    collection.update({'type': 'status', 'code': code}, {'$set': {'last updated': date}})
+
+
+# 만약 실행시간이 3시 30분 이전이면...?
+def is_before_market_close():
+    if datetime.time(15, 30) > datetime.datetime.now().time():
+        return True
+    else:
+        return False
 
 
 def update_new_status(collection, code):
