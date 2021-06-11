@@ -40,7 +40,7 @@ def get_date(day):
     return start + datetime.timedelta(days=day)
 
 
-def is_weekendy(date):
+def is_weekend(date):
     if date.weekday() == 6 or date.weekday() == 5:
         return True
     else:
@@ -55,7 +55,7 @@ def is_no_data(df):
 
 
 def is_end_day(date):
-    if date >= datetime.datetime(2021, 6, 10):
+    if date > datetime.datetime(2021, 6, 10):
         return True
     else:
         return False
@@ -72,11 +72,11 @@ def main():
     day = int(sys.argv[1])
     make_dir('data')
     date = get_date(day)
-    if is_weekend(date):
+    if is_end_day(date):
         make_dir(f'end_{day}')
         print(date, 'Done!!!!!!!!')
         time.sleep(100000)
-    if is_sunday(date):
+    if is_weekend(date):
         return
     data = get_item_data(date)
     if data == 'no data':
