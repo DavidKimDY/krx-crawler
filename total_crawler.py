@@ -36,12 +36,12 @@ def save_data(date, data):
 
 
 def get_date(day):
-    start = datetime.datetime(1995, 5, 1)
+    start = datetime.datetime(2016, 4, 15)
     return start + datetime.timedelta(days=day)
 
 
-def is_sunday(date):
-    if date.weekday() == 6:
+def is_weekend(date):
+    if date.weekday() == 6 or date.weekday() == 5:
         return True
     else:
         return False
@@ -55,7 +55,7 @@ def is_no_data(df):
 
 
 def is_end_day(date):
-    if date >= datetime.datetime(2021, 6, 10):
+    if date > datetime.datetime(2021, 6, 10):
         return True
     else:
         return False
@@ -76,7 +76,7 @@ def main():
         make_dir(f'end_{day}')
         print(date, 'Done!!!!!!!!')
         time.sleep(100000)
-    if is_sunday(date):
+    if is_weekend(date):
         return
     data = get_item_data(date)
     if data == 'no data':
