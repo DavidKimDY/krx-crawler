@@ -40,8 +40,8 @@ def get_date(day):
     return start + datetime.timedelta(days=day)
 
 
-def is_sunday(date):
-    if date.weekday() == 6:
+def is_weekendy(date):
+    if date.weekday() == 6 or date.weekday() == 5:
         return True
     else:
         return False
@@ -72,7 +72,7 @@ def main():
     day = int(sys.argv[1])
     make_dir('data')
     date = get_date(day)
-    if is_end_day(date):
+    if is_weekend(date):
         make_dir(f'end_{day}')
         print(date, 'Done!!!!!!!!')
         time.sleep(100000)
