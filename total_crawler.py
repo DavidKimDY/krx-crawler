@@ -36,7 +36,7 @@ def save_data(date, data):
 
 
 def get_date(day):
-    start = datetime.datetime(1995, 5, 1)
+    start = datetime.datetime(2016, 4, 15)
     return start + datetime.timedelta(days=day)
 
 
