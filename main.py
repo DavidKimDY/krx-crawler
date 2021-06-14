@@ -1,7 +1,6 @@
 import datetime
-import time
 import os
-
+from time import sleep
 
 now = datetime.datetime.now()
 time = now.time()
@@ -19,7 +18,8 @@ if weekday < 5:
     if time > datetime.time(15,30):
         print('sh run4.bash')
         os.system('sh run4.bash')
+        sleep(A_DAY)
     else:
-        time.sleep(A_HOUR)
+        sleep(A_HOUR)
 else:
-    time.sleep(A_DAY)
+    sleep(A_DAY)
