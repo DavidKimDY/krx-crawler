@@ -1,2 +1,2 @@
-python crawler.py
-python update.py
+python3 crawler.py
+python3 update.py
