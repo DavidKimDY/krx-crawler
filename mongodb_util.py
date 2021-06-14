@@ -21,8 +21,8 @@ def get_mongodb_client():
     )
 
 
-def get_mongodb_collection():
+def get_mongodb_collection(collection):
     client = get_mongodb_client()
     env = get_env()
-    return client[env("AUTHSOURCE")]['krx']
+    return client[env("AUTHSOURCE")][collection]
 
