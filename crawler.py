@@ -3,12 +3,12 @@ import os
 import datetime
 
 import mongodb_util as mu
-import coredotfinance.krx as krx
+from coredotfinance.data import KrxReader
 
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = 'data'
 DATA_PATH = os.path.join(FILE_PATH, DATA_DIR)
-
+krx = KrxReader()
 
 def get_status():
     collection = mu.get_mongodb_collection('krx')
@@ -33,8 +33,12 @@ def df2json(df):
 
 
 def get_item_data(date_str):
-    eight_digit_date = make_8_digit(date_str)
-    df = krx.get('all', eight_digit_date)
+
+    #eight_digit_date = make_8_digit(date_str)
+    #df = krx.get('all', eight_digit_date)
+    #####
+    df = krx.read_date(date_str)
+    #####
     if is_no_data(df):
         return 'no data'
     # datetime to string in order for df.index to convert to json properly
@@ -65,7 +69,7 @@ def is_no_data(df):
 def is_end_day(date_str):
     next_date = datetime.datetime.now() + datetime.timedelta(days=1)
     end_day = str(next_date.date())
-    if date_str == end_day:
+    if date_str >= end_day:
         return True
     else:
         return False
@@ -82,28 +86,38 @@ def make_dir(directory):
 
 
 def add_one_day(date_str):
-    print(date_str)
     date = str2datetime(date_str)
     next_day = date + datetime.timedelta(days=1)
-    print(next_day)
     return str(next_day.date())
 
+def log(date, msg):
+    with open('log.txt', 'a') as f:
+        f.write(f'{date} : {msg}\n')
 
 # day > 0
 def main():
     make_dir('data')
     status = get_status()
     date_str = get_date(status)
-    while not is_end_day(date_str):
-        print(date_str)
+    log('running crawler.py', datetime.datetime.today().isoformat())
+    log('status in mongodb', date_str)
+
+    while True:
         date_str = add_one_day(date_str)
+        if is_end_day(date_str):
+            log(date_str, 'end')
+            break
         if is_weekend(date_str):
+            log(date_str, 'weekend')
             continue
         data = get_item_data(date_str)
         if data == 'no data':
+            log(date_str, 'no data')
             continue
         save_data(date_str, data)
+        log(date_str, 'saved')
         update_status(date_str)
+        log(date_str, 'updated')
 
 
 if __name__ == '__main__':
