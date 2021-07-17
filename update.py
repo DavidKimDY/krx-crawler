@@ -29,7 +29,7 @@ def is_json(file):
 
 # 새로 상장된 회사는 insert 한다.
 def insert_document(collection, data):
-    return # collection.insert_one(data)
+    return  collection.insert_one(data)
 
 
 def update_document(collection, data, code):

@@ -8,3 +8,9 @@ prof_krx_crawler.py
 test.py
 test_krx_crawler.py
 .env
+log/
+storage/
+.swp
+*.out
+.vimrc
+*.swp
