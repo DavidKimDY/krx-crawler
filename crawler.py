@@ -3,7 +3,7 @@ import os
 import datetime
 
 import mongodb_util as mu
-import coredotfinance.krx as krx
+from coredotfinance.data import KrxReader
 
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = 'data'
@@ -11,13 +11,13 @@ DATA_PATH = os.path.join(FILE_PATH, DATA_DIR)
 
 
 def get_status():
-    collection = mu.get_mongodb_collection('krx')
-    return collection.find_one({'type': 'status'})
+    collection = mu.get_mongodb_collection('krx_status')
+    return collection.find_one({'type': 'krx_stock'})
 
 
 def update_status(date_str):
-    collection = mu.get_mongodb_collection('krx')
-    collection.update_one({'type': 'status'}, {'$set': {'date': date_str}})
+    collection = mu.get_mongodb_collection('krx_status')
+    collection.update_one({'type': 'krx_stock'}, {'$set': {'date': date_str}})
 
 
 def get_date(status):
@@ -33,8 +33,8 @@ def df2json(df):
 
 
 def get_item_data(date_str):
-    eight_digit_date = make_8_digit(date_str)
-    df = krx.get('all', eight_digit_date)
+    krx = KrxReader()
+    df = krx.read_date(date_str)
     if is_no_data(df):
         return 'no data'
     # datetime to string in order for df.index to convert to json properly

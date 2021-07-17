@@ -29,10 +29,11 @@ def is_json(file):
 
 # 새로 상장된 회사는 insert 한다.
 def insert_document(collection, data):
-    return collection.insert_one(data)
+    return # collection.insert_one(data)
 
 
 def update_document(collection, data, code):
+    """
     collection.update(
         {'code': code, 'type': 'stock', 'source': 'krx'},
         {'$push': {
@@ -43,6 +44,7 @@ def update_document(collection, data, code):
         }
         }
     )
+    """
 
 
 def tagging_for_krx_storage(data, date):
@@ -80,9 +82,38 @@ def mv_data_to_temp(file_name):
     os.system(f'mv data/{file_name} storage/{file_name}')
 
 
+def insert(data, collection, date):
+    map_ = {
+        '종목명': 'name',
+        '시장구분': 'market',
+        '소속부': 'division',
+        '종가': 'close',
+        '대비': 'change',
+        '등락률': 'change_ratio',
+        '시가': 'open',
+        '고가': 'high',
+        '저가': 'low',
+        '거래량': 'trading_volume',
+        '거래대금': 'trading_value',
+        '시가총액': 'market_cap',
+        '상장주식수': 'shares_outstanding',
+        '날짜': 'date'
+    }
+
+    document = {'symbol': data['종목코드']}
+    del data['종목코드']
+
+    for key in data.keys():
+        new_key = map_[key]
+        value = data[key]
+        document[new_key] = value
+    document['date'] = date
+    collection.insert_one(document)
+
+
 def main():
     make_storage_dir()
-    krx_collection = mu.get_mongodb_collection('krx')
+    krx_stock_collection = mu.get_mongodb_collection('krx_stock')
     krx_storage_collection = mu.get_mongodb_collection('krx_storage')
     file_list = get_file_list()
 
@@ -91,23 +122,12 @@ def main():
         raw_data = open_file(file)
         date = get_date(file)
         data_for_krx_storage = tagging_for_krx_storage(raw_data, date)
-        # print('dfks : ', data_for_krx_storage.keys())
         insert_document(krx_storage_collection, data_for_krx_storage)
-
         data_list = ppl.convert(raw_data)
+
         for data in data_list:
-            code = data.pop('종목코드')
-            data['날짜'] = date
-            if is_new_data(krx_collection, code):
-                print(code, 'is new')
-                new_data = tagging_for_new_data(data, code)
-                # print('new :', new_data.keys())
-                # print(data)
-                insert_document(krx_collection, data)
-            else:
-                print(code, 'is updated', file)
-                # print(data)
-                update_document(krx_collection, data, code)
+            insert(data, krx_stock_collection, date)
+
         mv_data_to_temp(file)
 
 
