@@ -101,12 +101,9 @@ def main():
             if is_new_data(krx_collection, code):
                 print(code, 'is new')
                 new_data = tagging_for_new_data(data, code)
-                # print('new :', new_data.keys())
-                # print(data)
-                insert_document(krx_collection, data)
+                insert_document(krx_collection, new_data)
             else:
                 print(code, 'is updated', file)
-                # print(data)
                 update_document(krx_collection, data, code)
         mv_data_to_temp(file)
 
