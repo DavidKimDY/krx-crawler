@@ -11,12 +11,12 @@ DATA_PATH = os.path.join(FILE_PATH, DATA_DIR)
 krx = KrxReader()
 
 def get_status():
-    collection = mu.get_mongodb_collection('krx_status')
+    collection = mu.get_mongodb_collection('krx_stock')
     return collection.find_one({'type': 'krx_stock'})
 
 
 def update_status(date_str):
-    collection = mu.get_mongodb_collection('krx_status')
+    collection = mu.get_mongodb_collection('krx_stock')
     collection.update_one({'type': 'krx_stock'}, {'$set': {'date': date_str}})
 
 
@@ -114,6 +114,7 @@ def main():
         log(date_str, 'saved')
         update_status(date_str)
         log(date_str, 'updated')
+        break
 
 
 if __name__ == '__main__':
