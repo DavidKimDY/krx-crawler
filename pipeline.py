@@ -17,7 +17,7 @@ def get_date(file_name):
 
 
 def get_indices(data):
-    return list(data['종목코드'].keys())
+    return list(data['symbol'].keys())
 
 
 def data_by_index(data, index):
@@ -25,11 +25,6 @@ def data_by_index(data, index):
     for key in data.keys():
         data_by_key = data[key]
         dbi[key] = data_by_key[index]
-    return dbi
-
-
-def add_date(dbi, date):
-    dbi['날짜'] = date
     return dbi
 
 
